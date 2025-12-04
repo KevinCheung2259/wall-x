@@ -44,7 +44,8 @@ RUN conda config --add channels conda-forge && \
     conda clean -ya
 
 # 激活环境并设置为默认
-ENV PATH=/opt/conda/envs/wallx/bin:$PATH
+ENV PATH=/opt/conda/envs/wallx/bin:$PATH \
+    LD_LIBRARY_PATH=/opt/conda/envs/wallx/lib:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 SHELL ["/bin/bash", "-c"]
 
 # 复制项目文件
@@ -64,6 +65,25 @@ COPY 3rdparty /workspace/3rdparty
 # 安装 Python 依赖
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt
+
+# 设置 LD_LIBRARY_PATH：包含 PyTorch、所有 NVIDIA CUDA 库和系统库
+# 按字母顺序排列便于维护
+ENV LD_LIBRARY_PATH=\
+/opt/conda/envs/wallx/lib/python3.10/site-packages/torch/lib:\
+/opt/conda/envs/wallx/lib/python3.10/site-packages/nvidia/cublas/lib:\
+/opt/conda/envs/wallx/lib/python3.10/site-packages/nvidia/cuda_cupti/lib:\
+/opt/conda/envs/wallx/lib/python3.10/site-packages/nvidia/cuda_nvrtc/lib:\
+/opt/conda/envs/wallx/lib/python3.10/site-packages/nvidia/cuda_runtime/lib:\
+/opt/conda/envs/wallx/lib/python3.10/site-packages/nvidia/cudnn/lib:\
+/opt/conda/envs/wallx/lib/python3.10/site-packages/nvidia/cufft/lib:\
+/opt/conda/envs/wallx/lib/python3.10/site-packages/nvidia/curand/lib:\
+/opt/conda/envs/wallx/lib/python3.10/site-packages/nvidia/cusolver/lib:\
+/opt/conda/envs/wallx/lib/python3.10/site-packages/nvidia/cusparse/lib:\
+/opt/conda/envs/wallx/lib/python3.10/site-packages/nvidia/nccl/lib:\
+/opt/conda/envs/wallx/lib/python3.10/site-packages/nvidia/nvjitlink/lib:\
+/opt/conda/envs/wallx/lib/python3.10/site-packages/nvidia/nvtx/lib:\
+/opt/conda/envs/wallx/lib:\
+/usr/local/cuda/lib64
 
 # 安装 Flash Attention（限制并行编译作业数以避免内存不足）
 RUN MAX_JOBS=4 pip install --no-cache-dir --no-build-isolation flash-attn==2.7.4.post1
