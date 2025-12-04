@@ -37,7 +37,10 @@ RUN curl -o ~/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest
     /opt/conda/bin/conda clean -ya
 
 # 创建 Python 3.10 环境
-RUN conda create -n wallx python=3.10 -y && \
+# 使用 conda-forge 以避免 Anaconda TOS 限制
+RUN conda config --add channels conda-forge && \
+    conda config --set channel_priority strict && \
+    conda create -n wallx python=3.10 -y -c conda-forge --override-channels && \
     conda clean -ya
 
 # 激活环境并设置为默认
@@ -75,6 +78,9 @@ RUN git clone https://github.com/huggingface/lerobot.git /tmp/lerobot && \
 
 # 安装 Wall-X（编译 CUDA 扩展）
 # 注意：3rdparty 已通过 COPY 包含，无需再初始化 submodule
+# 设置 TORCH_CUDA_ARCH_LIST 以支持多种 GPU 架构，避免构建时检测 GPU
+# 8.0: A100, 8.6: RTX 30系列, 8.9: RTX 40系列, 9.0: H100
+ENV TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0"
 RUN MAX_JOBS=4 pip install --no-build-isolation --verbose .
 
 # 创建模型和数据目录
