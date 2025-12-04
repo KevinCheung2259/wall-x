@@ -38,6 +38,25 @@ This repository provides the training and inference code that supports our WALL 
 
 ## Environment Setup
 
+### Option 1: Using Docker (Recommended)
+
+Build and run with Docker to avoid manual environment configuration:
+
+```bash
+# Build Docker image
+docker build -t wall-x:latest .
+
+# Run container with GPU support
+docker run -it --gpus all \
+  -v $(pwd)/models:/workspace/models \
+  -v $(pwd)/data:/workspace/data \
+  wall-x:latest
+```
+
+Now you can use training, inference, and other features inside the container.
+
+### Option 2: Manual Installation
+
 Create and activate conda environment:
 ```bash
 conda create --name wallx python=3.10

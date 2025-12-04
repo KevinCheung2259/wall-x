@@ -1,0 +1,68 @@
+# Git 相关
+.git
+.gitignore
+.gitattributes
+.gitmodules
+
+# Python 相关
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# IDE 相关
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 日志和缓存
+*.log
+logs/
+*.cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 模型和数据文件（这些应该通过挂载卷提供）
+models/
+data/
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.bin
+
+# 临时文件
+tmp/
+temp/
+*.tmp
+
+# 文档和资源（可选择性包含）
+docs/
+examples/
+tests/
+*.md
+!README.md
+
+# 其他
+.cursor/
+terminals/
+
