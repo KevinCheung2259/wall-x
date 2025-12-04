@@ -45,15 +45,18 @@ ENV PATH=/opt/conda/envs/wallx/bin:$PATH
 SHELL ["/bin/bash", "-c"]
 
 # 复制项目文件
+# 注意：构建前需要先在宿主机初始化 submodule：git submodule update --init --recursive
 COPY requirements.txt /workspace/
 COPY setup.py /workspace/
 COPY pyproject.toml /workspace/
-COPY 3rdparty /workspace/3rdparty
 COPY csrc /workspace/csrc
 COPY wall_x /workspace/wall_x
 COPY scripts /workspace/scripts
 COPY train_qact.py /workspace/
 COPY README.md /workspace/
+
+# 复制 3rdparty（submodule）- 必须在宿主机上先初始化
+COPY 3rdparty /workspace/3rdparty
 
 # 安装 Python 依赖
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
@@ -71,8 +74,8 @@ RUN git clone https://github.com/huggingface/lerobot.git /tmp/lerobot && \
     rm -rf /tmp/lerobot/.git
 
 # 安装 Wall-X（编译 CUDA 扩展）
-RUN git submodule update --init --recursive || true && \
-    MAX_JOBS=4 pip install --no-build-isolation --verbose .
+# 注意：3rdparty 已通过 COPY 包含，无需再初始化 submodule
+RUN MAX_JOBS=4 pip install --no-build-isolation --verbose .
 
 # 创建模型和数据目录
 RUN mkdir -p /workspace/models /workspace/data /workspace/logs

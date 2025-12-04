@@ -43,6 +43,9 @@ This repository provides the training and inference code that supports our WALL 
 Build and run with Docker to avoid manual environment configuration:
 
 ```bash
+# Initialize submodules first
+git submodule update --init --recursive
+
 # Build Docker image
 docker build -t wall-x:latest .
 
